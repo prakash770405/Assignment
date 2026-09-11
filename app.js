@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require("express");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
@@ -13,10 +15,10 @@ const app = express();
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride("_method"));
 app.use(cookieParser());
-const SECRET_KEY = "mysecretkey";
+
 
 async function main() {
-  await mongoose.connect('mongodb://127.0.0.1/bhoolgya');
+  await mongoose.connect(process.env.MONGO_URL);
 }
 
 main()
@@ -24,7 +26,7 @@ main()
   .catch(err => console.log(err));
 
 
-app.listen(3000, (req, res) => {
+app.listen(process.env.PORT, (req, res) => {
   console.log("app is listening to port 3000");
 })
 
@@ -76,6 +78,8 @@ app.delete("/data/delete/:id", auth, async (req, res) => {
 
 
 
+
+
 app.get("/login", (req, res) => {
   res.render("loginform.ejs");
 })
@@ -93,7 +97,7 @@ app.post("/login/data", async (req, res) => {
       id: data._id,
       username: data.username
     },
-    SECRET_KEY,
+    process.env.JWT_SECRET,
     {
       expiresIn: "1h"
     }
@@ -143,7 +147,7 @@ app.post("/signup/data", async (req, res) => {
         id: client._id,
         username: client.username
       },
-      SECRET_KEY,
+     process.env.JWT_SECRET,
       {
         expiresIn: "1h"
       }
