@@ -1,10 +1,11 @@
 require('dotenv').config()
 
 const express = require("express");
+const cors = require("cors");
 const mongoose = require("mongoose");
-const methodOverride = require("method-override");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+
 
 const auth = require("./middleware/auth");
 const User = require("./Models/bhool.js");
@@ -12,8 +13,12 @@ const Client = require("./Models/client.js");
 
 const app = express();
 
-app.use(express.urlencoded({ extended: true }))
-app.use(methodOverride("_method"));
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
@@ -26,13 +31,11 @@ main()
   .catch(err => console.log(err));
 
 
-app.listen(process.env.PORT, (req, res) => {
+app.listen(process.env.PORT, () => {
   console.log("app is listening to port 3000");
 })
 
-app.get("/", auth, (req, res) => {
-  res.render("index.ejs");
-})
+
 
 app.post("/data", auth, async (req, res) => {
   const { name, email, age, std, roll } = req.body;
@@ -41,33 +44,29 @@ app.post("/data", auth, async (req, res) => {
     name: name, std: std, email: email, age: age, roll: roll
   });
 
-  await newuser.save();
+  const user = await newuser.save();
 
-  res.redirect("/Alldata");
+  res.json(user);
 })
 
 app.get("/Alldata", auth, async (req, res) => {
   let alldata = await User.find()
-  res.render("alldata.ejs", { alldata });
+  res.json(alldata);
 })
 
-app.get("/data/edit/:id", auth, async (req, res) => {
-  const { id } = req.params;
-  const user = await User.findById(id);
-  res.render("editpage.ejs", { user });
-})
 
 app.put("/edit/:id/data", auth, async (req, res) => {
   const { email, age, roll, std, name } = req.body;
   const { id } = req.params;
+  console.log(id)
   const user = await User.findByIdAndUpdate(id, { email, age, roll, std, name });
-  res.redirect("/Alldata");
+  res.json(user);
 })
 
 app.delete("/data/delete/:id", auth, async (req, res) => {
   const { id } = req.params;
   const user = await User.findByIdAndDelete(id);
-  res.redirect("/Alldata");
+  res.json(user);
 })
 
 
@@ -80,9 +79,7 @@ app.delete("/data/delete/:id", auth, async (req, res) => {
 
 
 
-app.get("/login", (req, res) => {
-  res.render("loginform.ejs");
-})
+
 
 app.post("/login/data", async (req, res) => {
   const { email, password } = req.body;
@@ -106,7 +103,7 @@ app.post("/login/data", async (req, res) => {
   // Store token in cookie
   res.cookie("token", token);
 
-  res.redirect("/");
+  res.json(data)
 })
 
 app.get("/logout", (req, res) => {
@@ -116,13 +113,10 @@ app.get("/logout", (req, res) => {
     "Pragma": "no-cache",
     "Expires": "0"
   });
-  res.redirect("/login");
+  res.json("logout");
 })
 
 
-app.get("/signup", (req, res) => {
-  res.render("signupform.ejs");
-})
 
 app.post("/signup/data", async (req, res) => {
   const { name, email, password } = req.body;
@@ -147,17 +141,23 @@ app.post("/signup/data", async (req, res) => {
         id: client._id,
         username: client.username
       },
-     process.env.JWT_SECRET,
+      process.env.JWT_SECRET,
       {
         expiresIn: "1h"
       }
     );
 
     res.cookie("token", token);
-    res.redirect("/");
+    res.json(client);
   }
 })
 
+
+app.get("/api/check-auth", auth, (req, res) => {
+  res.json({
+    loggedIn: true
+  });
+});
 
 
 //  name =Bhool

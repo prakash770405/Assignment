@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -24,11 +26,17 @@ function Home() {
               </p>
 
               <div className="mt-4">
-                <Button variant="primary" size="lg" className="me-2">
+                <Button variant="primary" size="lg" className="me-2"
+                  as={Link}
+                  to="/signup"
+                >
                   SignIn
                 </Button>
 
-                <Button variant="dark" size="lg">
+                <Button variant="dark" size="lg"
+                 as={Link}
+                 to="/login"
+                >
                   LogIn
                 </Button>
               </div>
@@ -131,7 +139,7 @@ function Home() {
       </section>
 
 
-     
+
     </>
   );
 }

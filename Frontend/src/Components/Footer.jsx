@@ -14,11 +14,11 @@ function Footer() {
           {/* Brand */}
           <Col md={5}>
             <h3 className="fw-bold">
-              MyWebsite
+              MyAssignment App
             </h3>
 
             <p className="text-secondary mt-3">
-              We create simple, modern and reliable
+              My simple, modern and reliable
               digital experiences for everyone.
             </p>
           </Col>
@@ -60,15 +60,15 @@ function Footer() {
             </h5>
 
             <p className="text-secondary mb-2">
-              📧 hello@example.com
+              📧 suryazzz642@.com
             </p>
 
             <p className="text-secondary mb-2">
-              📞 +91 98765 43210
+              📞 +91 7704054195
             </p>
 
             <p className="text-secondary">
-              📍 New Delhi, India
+              📍 Noida, Sector-66, India
             </p>
           </Col>
 
@@ -82,7 +82,7 @@ function Footer() {
 
             <Col md={6} className="text-center text-md-start">
               <small className="text-secondary">
-                © 2026 MyWebsite. All rights reserved.
+                © 2026 My Assignment App. All rights reserved.
               </small>
             </Col>
 
